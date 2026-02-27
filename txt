@@ -1,0 +1,78 @@
+Subject: Offshore VDI Performance Concerns – Information Required Before GSD Escalation
+
+Hi [BI Manager Name],
+
+Thank you for outlining the challenges the offshore team is facing. I fully understand the productivity impact if ~40 minutes per day is being spent just on environment setup.
+
+Before we formally engage the GSD/Infrastructure team and raise a ticket, I would like to gather a few clarifications so we can approach this with accurate data and discuss viable solutions (especially where cost or infrastructure changes may be involved).
+
+Please help clarify the below:
+
+1️⃣ Dedicated VDI vs Existing Capacity
+
+From an infrastructure perspective, there are typically two possible approaches:
+
+Request dedicated VDI machines for the offshore team
+
+Request capacity enhancement for the existing VDI pool
+
+Both options will likely involve additional cost, which would need business approval.
+
+Can you confirm:
+
+Are the delays experienced by all offshore users or specific individuals?
+
+How many users are impacted daily?
+
+This will help determine whether a dedicated allocation makes business sense.
+
+2️⃣ High Spec Machine (HSM) Spin-Up Time
+
+As per current understanding, High Spec Machines usually take around 9 minutes maximum to become available.
+
+If the requirement is to have them ready immediately at shift start, one operational workaround could be:
+
+A rota-based approach, where the first offshore user logs in earlier and spins up all allocated HSMs for the team.
+
+Please confirm:
+
+Are users waiting for individual HSM allocation each morning?
+
+Or is there a shared pool?
+
+3️⃣ Non-Prod Servers Availability
+
+Non-prod feature servers are configured to auto start every Sunday 9:00 PM EST (7:30 AM IST).
+
+If someone starts work at 6:00 AM IST on Monday, the server will not yet be available — this is expected behavior based on the schedule.
+
+Please confirm:
+
+What is the standard offshore shift start time?
+
+Are users attempting access before the scheduled auto start window?
+
+If required, we can discuss whether schedule adjustment is feasible (subject to infra approval).
+
+4️⃣ Application Slowness (Outlook, Browser, Visual Studio, SSMS)
+
+We need to confirm whether users are accessing these applications:
+
+On standard VDI
+
+Or on High Spec Machines (HSM)
+
+Performance issues on HSM should ideally be minimal.
+
+If applications are being run on regular VDI instead of HSM, that may explain the slowness.
+If they are already on HSM and still facing issues, then we may need to engage the provisioning team separately.
+
+Please confirm:
+
+Where exactly these applications are being accessed from?
+
+Whether slowness is constant or intermittent?
+
+Once we have clarity on the above points, I will consolidate the information and initiate discussion with the appropriate teams (GSD / Infra / Provisioning) with a structured case to ensure quicker resolution.
+
+Looking forward to your inputs.
