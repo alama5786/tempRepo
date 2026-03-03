@@ -1,13 +1,68 @@
-Subject: Approval Required for Copying PROD S3 Data to NON-PROD for Glue Job Testing
+Hi [Manager’s Name],
 
-Dear [Solution Architect’s Name],
+Yes, we are clear on the responsibilities. Please see a simplified breakdown below for alignment:
 
-As discussed, we have a requirement to set up a Non-Production environment that mirrors the Production environment in terms of S3 data volume. This is necessary to properly test the performance of Glue jobs and implement any required fixes before changes go live.
+🔹 Enterprise DevOps
 
-Before we proceed with copying data from Production to Non-Production, we need your confirmation that the data does not contain any personal or sensitive information that should not be replicated outside of Production.
+This team are the administrators and owners of the DevOps toolset (e.g., GitHub, Jenkins, Artifactory, etc.).
 
-Once we receive your confirmation and approval, we will proceed to obtain the necessary authorization from the XXX Cloud Security Team to ensure compliance and governance requirements are fully met.
+They are responsible for:
 
-Kindly review and provide your approval so that we can initiate this process.
+Tool administration and governance
 
-Thank you for your support.
+Access management (GitHub, Jenkins, etc.)
+
+Infrastructure issues related to DevOps tools
+
+Server availability and platform-level problems
+
+Upgrades, maintenance, and configuration at tool level
+
+In short:
+They manage and maintain the DevOps platforms themselves.
+
+🔹 BAU DevOps
+
+This team owns the CI/CD pipelines and their configurations.
+
+They are responsible for:
+
+Pipeline setup and maintenance
+
+Build and deployment configurations
+
+Fixing pipeline failures
+
+Supporting application teams during deployments
+
+In short:
+They ensure applications are built and deployed correctly using the tools.
+
+If there is any failure during a release pipeline execution, BAU DevOps investigates and resolves it.
+
+🔹 Release Engineers
+
+This team manages the release execution process.
+
+They are responsible for:
+
+Creating release folders/branches
+
+Triggering release pipelines (e.g., via GitHub Actions)
+
+Coordinating release activities
+
+In short:
+They initiate and coordinate releases, but do not maintain the pipelines or tools.
+
+🔄 Simple Responsibility Flow
+
+Tool/platform issue → Enterprise DevOps
+
+Pipeline/configuration issue → BAU DevOps
+
+Release execution/trigger → Release Engineers
+
+Release failure → BAU DevOps to investigate
+
+Please let me know if you’d like this structured into a formal RACI for wider circulation.
