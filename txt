@@ -1,15 +1,13 @@
-Cross-Account S3 Copy – Task Breakdown
-#	Task	Account	Why It Is Needed (Business View)	Ideal Owner
-1	Create IAM Role for cross-account access	PROD	Create a controlled, temporary access mechanism instead of giving permanent access	Cloud Platform / AWS Infra Team
-2	Define IAM Policy (Read-only access to specific S3 bucket)	PROD	Ensure only required data can be read (no delete or modify permissions)	Cloud Platform / Security
-3	Configure Trust Policy (allow NON-PROD role to assume role)	PROD	Restrict who can borrow the temporary access badge	Cloud Platform
-4	Update PROD S3 Bucket Policy	PROD	Explicitly allow secure read access from NON-PROD role	Cloud Platform
-5	Update PROD KMS Key Policy (Allow Decrypt)	PROD	Allow encrypted files to be securely opened for copying	Cloud Platform + Security
-6	Create/Use IAM Role to perform copy operation	NON-PROD	Define which system/service performs the copy	DevOps Team
-7	Grant sts:AssumeRole permission	NON-PROD	Allow NON-PROD role to temporarily access PROD role	Cloud Platform
-8	Configure NON-PROD S3 Bucket Policy (Allow Write)	NON-PROD	Ensure data can be stored securely in destination bucket	Cloud Platform
-9	Update NON-PROD KMS Policy (Allow Encrypt, if used)	NON-PROD	Ensure copied data remains encrypted in NON-PROD	Cloud Platform + Security
-10	Execute Data Copy (aws s3 sync / automation job)	NON-PROD	Perform actual transfer of data	DevOps Team
-11	Validate Data Integrity & Access	NON-PROD	Confirm successful transfer and usability	DevOps + Application Team
-12	Enable Monitoring & Logging (CloudTrail)	Both	Ensure audit and compliance visibility	Cloud Platform / Security
-13	Remove or Restrict Access After Completion (if one-time task)	Both	Reduce long-term security exposure	Cloud Platform
+Subject: Approval Required for Copying PROD S3 Data to NON-PROD for Glue Job Testing
+
+Dear [Solution Architect’s Name],
+
+As discussed, we have a requirement to set up a Non-Production environment that mirrors the Production environment in terms of S3 data volume. This is necessary to properly test the performance of Glue jobs and implement any required fixes before changes go live.
+
+Before we proceed with copying data from Production to Non-Production, we need your confirmation that the data does not contain any personal or sensitive information that should not be replicated outside of Production.
+
+Once we receive your confirmation and approval, we will proceed to obtain the necessary authorization from the XXX Cloud Security Team to ensure compliance and governance requirements are fully met.
+
+Kindly review and provide your approval so that we can initiate this process.
+
+Thank you for your support.
