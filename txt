@@ -1,128 +1,15 @@
-Subject: Request for Secure Cross-Account S3 Data Copy (PROD → NON-PROD)
-
-Dear Cloud Platform Team,
-
-I hope you’re well.
-
-We have a requirement to copy data from the PROD S3 bucket to the NON-PROD S3 bucket for non-production use. Since the PROD bucket is encrypted using AWS KMS (SSE-KMS), we would like this implemented following AWS security best practices and least-privilege principles.
-
-Below are the requested steps and controls for implementation.
-
-🔹 Objective
-
-Securely copy data from:
-
-Source: PROD S3 Bucket
-
-Destination: NON-PROD S3 Bucket
-
-Encryption: SSE-KMS enabled in PROD (and potentially in NON-PROD)
-
-🔹 Required Implementation Steps
-1️⃣ Cross-Account Access Model (Recommended Approach)
-
-Please implement cross-account access using IAM Role assumption, rather than granting root-level permissions in bucket policies.
-
-Create an IAM Role in the PROD account
-
-Trust relationship should allow assumption from a specific NON-PROD IAM Role (not account root)
-
-Use External ID if deemed appropriate for additional security
-
-2️⃣ PROD Account Configuration
-
-A. IAM Role in PROD
-
-Grant permissions:
-
-s3:ListBucket on source bucket
-
-s3:GetObject on source bucket objects
-
-B. PROD Bucket Policy
-
-Allow access only to the specific NON-PROD IAM role
-
-C. PROD KMS Key Policy (Critical)
-
-Since the bucket uses SSE-KMS:
-
-Grant the NON-PROD role:
-
-kms:Decrypt
-
-kms:DescribeKey
-
-Without this, copy operations will fail with AccessDenied (kms:Decrypt).
-
-3️⃣ NON-PROD Account Configuration
-
-A. NON-PROD IAM Role
-
-Allow:
-
-sts:AssumeRole (to assume PROD role)
-
-s3:PutObject on destination bucket
-
-B. NON-PROD Bucket Policy
-
-Allow write access only from the designated NON-PROD role
-
-C. NON-PROD KMS Policy (If Encrypted)
-
-If destination bucket uses KMS:
-
-Allow:
-
-kms:Encrypt
-
-kms:GenerateDataKey
-
-kms:DescribeKey
-
-4️⃣ Data Transfer Method
-
-Please confirm the most appropriate method based on volume and frequency:
-
-One-time migration → aws s3 sync
-
-Recurring sync → Scheduled job (Lambda / EventBridge)
-
-Large-scale or ongoing → S3 Replication or AWS DataSync
-
-Kindly advise based on bucket size and expected transfer pattern.
-
-🔹 Security & Governance Considerations
-
-Please ensure:
-
-No wildcard (*) permissions
-
-No root principal usage
-
-Role-based least privilege
-
-CloudTrail logging enabled for audit
-
-Encryption maintained end-to-end
-
-No public exposure of buckets
-
-🔹 Clarifications Required
-
-Please confirm:
-
-Whether this will be a one-time or recurring requirement
-
-Approximate data volume
-
-Whether versioning is enabled on both buckets
-
-Whether object ownership or ACL considerations apply
-
-We would appreciate your guidance on the optimal architecture and confirmation once the configuration is complete.
-
-Please let us know if any further information is required from our side.
-
-Kind regards,
+Cross-Account S3 Copy – Task Breakdown
+#	Task	Account	Why It Is Needed (Business View)	Ideal Owner
+1	Create IAM Role for cross-account access	PROD	Create a controlled, temporary access mechanism instead of giving permanent access	Cloud Platform / AWS Infra Team
+2	Define IAM Policy (Read-only access to specific S3 bucket)	PROD	Ensure only required data can be read (no delete or modify permissions)	Cloud Platform / Security
+3	Configure Trust Policy (allow NON-PROD role to assume role)	PROD	Restrict who can borrow the temporary access badge	Cloud Platform
+4	Update PROD S3 Bucket Policy	PROD	Explicitly allow secure read access from NON-PROD role	Cloud Platform
+5	Update PROD KMS Key Policy (Allow Decrypt)	PROD	Allow encrypted files to be securely opened for copying	Cloud Platform + Security
+6	Create/Use IAM Role to perform copy operation	NON-PROD	Define which system/service performs the copy	DevOps Team
+7	Grant sts:AssumeRole permission	NON-PROD	Allow NON-PROD role to temporarily access PROD role	Cloud Platform
+8	Configure NON-PROD S3 Bucket Policy (Allow Write)	NON-PROD	Ensure data can be stored securely in destination bucket	Cloud Platform
+9	Update NON-PROD KMS Policy (Allow Encrypt, if used)	NON-PROD	Ensure copied data remains encrypted in NON-PROD	Cloud Platform + Security
+10	Execute Data Copy (aws s3 sync / automation job)	NON-PROD	Perform actual transfer of data	DevOps Team
+11	Validate Data Integrity & Access	NON-PROD	Confirm successful transfer and usability	DevOps + Application Team
+12	Enable Monitoring & Logging (CloudTrail)	Both	Ensure audit and compliance visibility	Cloud Platform / Security
+13	Remove or Restrict Access After Completion (if one-time task)	Both	Reduce long-term security exposure	Cloud Platform
