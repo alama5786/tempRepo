@@ -1,78 +1,128 @@
-Subject: Offshore VDI Performance Concerns – Information Required Before GSD Escalation
+Subject: Request for Secure Cross-Account S3 Data Copy (PROD → NON-PROD)
 
-Hi [BI Manager Name],
+Dear Cloud Platform Team,
 
-Thank you for outlining the challenges the offshore team is facing. I fully understand the productivity impact if ~40 minutes per day is being spent just on environment setup.
+I hope you’re well.
 
-Before we formally engage the GSD/Infrastructure team and raise a ticket, I would like to gather a few clarifications so we can approach this with accurate data and discuss viable solutions (especially where cost or infrastructure changes may be involved).
+We have a requirement to copy data from the PROD S3 bucket to the NON-PROD S3 bucket for non-production use. Since the PROD bucket is encrypted using AWS KMS (SSE-KMS), we would like this implemented following AWS security best practices and least-privilege principles.
 
-Please help clarify the below:
+Below are the requested steps and controls for implementation.
 
-1️⃣ Dedicated VDI vs Existing Capacity
+🔹 Objective
 
-From an infrastructure perspective, there are typically two possible approaches:
+Securely copy data from:
 
-Request dedicated VDI machines for the offshore team
+Source: PROD S3 Bucket
 
-Request capacity enhancement for the existing VDI pool
+Destination: NON-PROD S3 Bucket
 
-Both options will likely involve additional cost, which would need business approval.
+Encryption: SSE-KMS enabled in PROD (and potentially in NON-PROD)
 
-Can you confirm:
+🔹 Required Implementation Steps
+1️⃣ Cross-Account Access Model (Recommended Approach)
 
-Are the delays experienced by all offshore users or specific individuals?
+Please implement cross-account access using IAM Role assumption, rather than granting root-level permissions in bucket policies.
 
-How many users are impacted daily?
+Create an IAM Role in the PROD account
 
-This will help determine whether a dedicated allocation makes business sense.
+Trust relationship should allow assumption from a specific NON-PROD IAM Role (not account root)
 
-2️⃣ High Spec Machine (HSM) Spin-Up Time
+Use External ID if deemed appropriate for additional security
 
-As per current understanding, High Spec Machines usually take around 9 minutes maximum to become available.
+2️⃣ PROD Account Configuration
 
-If the requirement is to have them ready immediately at shift start, one operational workaround could be:
+A. IAM Role in PROD
 
-A rota-based approach, where the first offshore user logs in earlier and spins up all allocated HSMs for the team.
+Grant permissions:
+
+s3:ListBucket on source bucket
+
+s3:GetObject on source bucket objects
+
+B. PROD Bucket Policy
+
+Allow access only to the specific NON-PROD IAM role
+
+C. PROD KMS Key Policy (Critical)
+
+Since the bucket uses SSE-KMS:
+
+Grant the NON-PROD role:
+
+kms:Decrypt
+
+kms:DescribeKey
+
+Without this, copy operations will fail with AccessDenied (kms:Decrypt).
+
+3️⃣ NON-PROD Account Configuration
+
+A. NON-PROD IAM Role
+
+Allow:
+
+sts:AssumeRole (to assume PROD role)
+
+s3:PutObject on destination bucket
+
+B. NON-PROD Bucket Policy
+
+Allow write access only from the designated NON-PROD role
+
+C. NON-PROD KMS Policy (If Encrypted)
+
+If destination bucket uses KMS:
+
+Allow:
+
+kms:Encrypt
+
+kms:GenerateDataKey
+
+kms:DescribeKey
+
+4️⃣ Data Transfer Method
+
+Please confirm the most appropriate method based on volume and frequency:
+
+One-time migration → aws s3 sync
+
+Recurring sync → Scheduled job (Lambda / EventBridge)
+
+Large-scale or ongoing → S3 Replication or AWS DataSync
+
+Kindly advise based on bucket size and expected transfer pattern.
+
+🔹 Security & Governance Considerations
+
+Please ensure:
+
+No wildcard (*) permissions
+
+No root principal usage
+
+Role-based least privilege
+
+CloudTrail logging enabled for audit
+
+Encryption maintained end-to-end
+
+No public exposure of buckets
+
+🔹 Clarifications Required
 
 Please confirm:
 
-Are users waiting for individual HSM allocation each morning?
+Whether this will be a one-time or recurring requirement
 
-Or is there a shared pool?
+Approximate data volume
 
-3️⃣ Non-Prod Servers Availability
+Whether versioning is enabled on both buckets
 
-Non-prod feature servers are configured to auto start every Sunday 9:00 PM EST (7:30 AM IST).
+Whether object ownership or ACL considerations apply
 
-If someone starts work at 6:00 AM IST on Monday, the server will not yet be available — this is expected behavior based on the schedule.
+We would appreciate your guidance on the optimal architecture and confirmation once the configuration is complete.
 
-Please confirm:
+Please let us know if any further information is required from our side.
 
-What is the standard offshore shift start time?
-
-Are users attempting access before the scheduled auto start window?
-
-If required, we can discuss whether schedule adjustment is feasible (subject to infra approval).
-
-4️⃣ Application Slowness (Outlook, Browser, Visual Studio, SSMS)
-
-We need to confirm whether users are accessing these applications:
-
-On standard VDI
-
-Or on High Spec Machines (HSM)
-
-Performance issues on HSM should ideally be minimal.
-
-If applications are being run on regular VDI instead of HSM, that may explain the slowness.
-If they are already on HSM and still facing issues, then we may need to engage the provisioning team separately.
-
-Please confirm:
-
-Where exactly these applications are being accessed from?
-
-Whether slowness is constant or intermittent?
-
-Once we have clarity on the above points, I will consolidate the information and initiate discussion with the appropriate teams (GSD / Infra / Provisioning) with a structured case to ensure quicker resolution.
-
-Looking forward to your inputs.
+Kind regards,
