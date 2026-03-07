@@ -1,68 +1,47 @@
-Hi [Manager’s Name],
+# Parameters
+$SqlInstance = "YourSQLServerName"
+$ServiceAccount = "DOMAIN\ServiceAccount"
+$DurationMinutes = 60
 
-Yes, we are clear on the responsibilities. Please see a simplified breakdown below for alignment:
+Write-Host "Granting sysadmin access to $ServiceAccount on $SqlInstance"
 
-🔹 Enterprise DevOps
+# Grant sysadmin role
+$grantQuery = @"
+IF NOT EXISTS (
+    SELECT 1 
+    FROM sys.server_role_members rm
+    JOIN sys.server_principals r ON rm.role_principal_id = r.principal_id
+    JOIN sys.server_principals m ON rm.member_principal_id = m.principal_id
+    WHERE r.name = 'sysadmin' AND m.name = '$ServiceAccount'
+)
+BEGIN
+    ALTER SERVER ROLE [sysadmin] ADD MEMBER [$ServiceAccount]
+END
+"@
 
-This team are the administrators and owners of the DevOps toolset (e.g., GitHub, Jenkins, Artifactory, etc.).
+Invoke-Sqlcmd -ServerInstance $SqlInstance -Query $grantQuery
 
-They are responsible for:
+Write-Host "Sysadmin granted. Access will be revoked in $DurationMinutes minutes."
 
-Tool administration and governance
+# Wait for defined duration
+Start-Sleep -Seconds ($DurationMinutes * 60)
 
-Access management (GitHub, Jenkins, etc.)
+Write-Host "Revoking sysadmin access from $ServiceAccount"
 
-Infrastructure issues related to DevOps tools
+# Revoke sysadmin role
+$revokeQuery = @"
+IF EXISTS (
+    SELECT 1 
+    FROM sys.server_role_members rm
+    JOIN sys.server_principals r ON rm.role_principal_id = r.principal_id
+    JOIN sys.server_principals m ON rm.member_principal_id = m.principal_id
+    WHERE r.name = 'sysadmin' AND m.name = '$ServiceAccount'
+)
+BEGIN
+    ALTER SERVER ROLE [sysadmin] DROP MEMBER [$ServiceAccount]
+END
+"@
 
-Server availability and platform-level problems
+Invoke-Sqlcmd -ServerInstance $SqlInstance -Query $revokeQuery
 
-Upgrades, maintenance, and configuration at tool level
-
-In short:
-They manage and maintain the DevOps platforms themselves.
-
-🔹 BAU DevOps
-
-This team owns the CI/CD pipelines and their configurations.
-
-They are responsible for:
-
-Pipeline setup and maintenance
-
-Build and deployment configurations
-
-Fixing pipeline failures
-
-Supporting application teams during deployments
-
-In short:
-They ensure applications are built and deployed correctly using the tools.
-
-If there is any failure during a release pipeline execution, BAU DevOps investigates and resolves it.
-
-🔹 Release Engineers
-
-This team manages the release execution process.
-
-They are responsible for:
-
-Creating release folders/branches
-
-Triggering release pipelines (e.g., via GitHub Actions)
-
-Coordinating release activities
-
-In short:
-They initiate and coordinate releases, but do not maintain the pipelines or tools.
-
-🔄 Simple Responsibility Flow
-
-Tool/platform issue → Enterprise DevOps
-
-Pipeline/configuration issue → BAU DevOps
-
-Release execution/trigger → Release Engineers
-
-Release failure → BAU DevOps to investigate
-
-Please let me know if you’d like this structured into a formal RACI for wider circulation.
+Write-Host "Sysadmin access revoked successfully."
