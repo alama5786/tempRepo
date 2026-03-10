@@ -1,47 +1,33 @@
-# Parameters
-$SqlInstance = "YourSQLServerName"
-$ServiceAccount = "DOMAIN\ServiceAccount"
-$DurationMinutes = 60
-
-Write-Host "Granting sysadmin access to $ServiceAccount on $SqlInstance"
-
-# Grant sysadmin role
-$grantQuery = @"
-IF NOT EXISTS (
-    SELECT 1 
-    FROM sys.server_role_members rm
-    JOIN sys.server_principals r ON rm.role_principal_id = r.principal_id
-    JOIN sys.server_principals m ON rm.member_principal_id = m.principal_id
-    WHERE r.name = 'sysadmin' AND m.name = '$ServiceAccount'
-)
-BEGIN
-    ALTER SERVER ROLE [sysadmin] ADD MEMBER [$ServiceAccount]
-END
-"@
-
-Invoke-Sqlcmd -ServerInstance $SqlInstance -Query $grantQuery
-
-Write-Host "Sysadmin granted. Access will be revoked in $DurationMinutes minutes."
-
-# Wait for defined duration
-Start-Sleep -Seconds ($DurationMinutes * 60)
-
-Write-Host "Revoking sysadmin access from $ServiceAccount"
-
-# Revoke sysadmin role
-$revokeQuery = @"
-IF EXISTS (
-    SELECT 1 
-    FROM sys.server_role_members rm
-    JOIN sys.server_principals r ON rm.role_principal_id = r.principal_id
-    JOIN sys.server_principals m ON rm.member_principal_id = m.principal_id
-    WHERE r.name = 'sysadmin' AND m.name = '$ServiceAccount'
-)
-BEGIN
-    ALTER SERVER ROLE [sysadmin] DROP MEMBER [$ServiceAccount]
-END
-"@
-
-Invoke-Sqlcmd -ServerInstance $SqlInstance -Query $revokeQuery
-
-Write-Host "Sysadmin access revoked successfully."
+2026 Goals – DevOps Lead
+1. Developmental Goals
+Goal	Description
+Upskill in Container & CI/CD Technologies	Complete structured training and hands-on learning in Docker, Kubernetes, and Jenkins to strengthen platform engineering capabilities and improve CI/CD pipeline efficiencies.
+Improve Automation Capability	Identify repetitive operational activities (environment setup, refresh coordination, deployment tasks) and implement automation scripts to reduce manual effort and increase reliability.
+Team Skill Development	Mentor team members and help them improve their knowledge of release engineering processes, DevOps tools, and environment management practices.
+2. Financial Goals
+Goal	Description
+Optimize Infrastructure Resource Usage	Review usage of high-spec machines and development infrastructure to ensure optimal utilization and avoid unnecessary cost.
+License Cost Optimization	Coordinate effectively with teams to ensure **Microsoft Visual Studio license allocation is efficiently managed and unused licenses are reclaimed where possible.
+3. General Goals
+Goal	Description
+Improve Cross-Team Collaboration	Strengthen collaboration between Dev, QA, DBA, Security, and Infrastructure teams to ensure smooth environment setup, refresh activities, and deployment processes.
+Knowledge Documentation	Maintain updated documentation for release processes, environment setup steps, and deployment procedures to improve team knowledge sharing.
+4. No Longer Applicable
+Goal	Description
+Legacy Tool Support Review	Review and identify any outdated tools or processes currently in use and plan decommissioning or migration to modern solutions where applicable.
+5. Operational Goals
+Goal	Description
+Efficient Release Management	Ensure stable and timely execution of release engineering activities for development and QA environments supporting ~60 developers and testers.
+Environment Management	Coordinate environment provisioning and refresh activities with Dev, QA, and DBA teams to ensure environments remain stable and up to date.
+Deployment Support	Manage and streamline deployment activities in non-production environments to reduce delays and improve reliability.
+Infrastructure Coordination	Ensure high-spec development machines and related infrastructure are provisioned and maintained effectively to support development teams.
+6. Organizational Goals
+Goal	Description
+Support Engineering Productivity	Provide reliable platform and release support to around 60 developers and testers to help accelerate development and testing cycles.
+Team Leadership	Continue leading and supporting a team of 3 engineers by improving task distribution, collaboration, and operational efficiency.
+Process Standardization	Standardize environment setup, deployment, and release processes across teams to reduce dependency on individuals.
+7. Strategic Goals
+Goal	Description
+DevOps Capability Improvement	Explore opportunities to introduce more DevOps practices such as improved CI/CD pipeline integration and automation within the current platform.
+Platform Stability & Scalability	Ensure the development and QA platforms remain scalable and stable as project demands increase.
+Future Platform Modernization	Evaluate future improvements such as containerization or modern CI/CD workflows that can enhance the engineering platform over time.
