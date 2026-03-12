@@ -1,11 +1,9 @@
-I would like to highlight that Srini’s end date is 31 March 2026, and currently there is no replacement identified for his role.
+Just a quick reminder that it has already been agreed and communicated that the direct point of contact for Dev and QA teams should be the internal Talbot DevOps team, rather than approaching AIG teams directly.
 
-For the past 15 days, I have been raising that we need someone to take over his responsibilities and also allow sufficient time for proper knowledge transition from Srini.
+For any issue that needs to be raised with AIG, a ServiceNow ticket must be created first. The AIG teams typically do not entertain direct requests via email and instead expect issues to be logged through the proper ticketing process.
 
-Once Srini leaves, we will have only one Release Engineer (Sayeed) supporting releases. Since releases generally happen every week, often out of office hours and sometimes on weekends, depending on a single person for this activity creates a significant risk.
+Therefore, please do not directly contact DBA, Infrastructure, Security, or any AIG teams without involving the internal Talbot DevOps team. Once a ServiceNow ticket is raised, the appropriate teams will take action accordingly.
 
-Swati is currently working on pipeline testing, and her work involves checking scripts into GitHub. Because of segregation of duties as per AIG standards, she cannot take up the Release Engineer role until she completes this work and at least three months have passed afterwards.
+Following this process will help ensure issues are tracked properly and handled in line with the agreed support model.
 
-Releasing a key resource like Srini without having a replacement in place does not seem appropriate from an operational perspective. I wanted to highlight this well in advance so that we are aware of the potential impact.
-
-Requesting you to please look into this matter on priority.
+Thanks for your cooperation.
