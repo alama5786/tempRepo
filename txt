@@ -1,33 +1,11 @@
-2026 Goals – DevOps Lead
-1. Developmental Goals
-Goal	Description
-Upskill in Container & CI/CD Technologies	Complete structured training and hands-on learning in Docker, Kubernetes, and Jenkins to strengthen platform engineering capabilities and improve CI/CD pipeline efficiencies.
-Improve Automation Capability	Identify repetitive operational activities (environment setup, refresh coordination, deployment tasks) and implement automation scripts to reduce manual effort and increase reliability.
-Team Skill Development	Mentor team members and help them improve their knowledge of release engineering processes, DevOps tools, and environment management practices.
-2. Financial Goals
-Goal	Description
-Optimize Infrastructure Resource Usage	Review usage of high-spec machines and development infrastructure to ensure optimal utilization and avoid unnecessary cost.
-License Cost Optimization	Coordinate effectively with teams to ensure **Microsoft Visual Studio license allocation is efficiently managed and unused licenses are reclaimed where possible.
-3. General Goals
-Goal	Description
-Improve Cross-Team Collaboration	Strengthen collaboration between Dev, QA, DBA, Security, and Infrastructure teams to ensure smooth environment setup, refresh activities, and deployment processes.
-Knowledge Documentation	Maintain updated documentation for release processes, environment setup steps, and deployment procedures to improve team knowledge sharing.
-4. No Longer Applicable
-Goal	Description
-Legacy Tool Support Review	Review and identify any outdated tools or processes currently in use and plan decommissioning or migration to modern solutions where applicable.
-5. Operational Goals
-Goal	Description
-Efficient Release Management	Ensure stable and timely execution of release engineering activities for development and QA environments supporting ~60 developers and testers.
-Environment Management	Coordinate environment provisioning and refresh activities with Dev, QA, and DBA teams to ensure environments remain stable and up to date.
-Deployment Support	Manage and streamline deployment activities in non-production environments to reduce delays and improve reliability.
-Infrastructure Coordination	Ensure high-spec development machines and related infrastructure are provisioned and maintained effectively to support development teams.
-6. Organizational Goals
-Goal	Description
-Support Engineering Productivity	Provide reliable platform and release support to around 60 developers and testers to help accelerate development and testing cycles.
-Team Leadership	Continue leading and supporting a team of 3 engineers by improving task distribution, collaboration, and operational efficiency.
-Process Standardization	Standardize environment setup, deployment, and release processes across teams to reduce dependency on individuals.
-7. Strategic Goals
-Goal	Description
-DevOps Capability Improvement	Explore opportunities to introduce more DevOps practices such as improved CI/CD pipeline integration and automation within the current platform.
-Platform Stability & Scalability	Ensure the development and QA platforms remain scalable and stable as project demands increase.
-Future Platform Modernization	Evaluate future improvements such as containerization or modern CI/CD workflows that can enhance the engineering platform over time.
+I would like to highlight that Srini’s end date is 31 March 2026, and currently there is no replacement identified for his role.
+
+For the past 15 days, I have been raising that we need someone to take over his responsibilities and also allow sufficient time for proper knowledge transition from Srini.
+
+Once Srini leaves, we will have only one Release Engineer (Sayeed) supporting releases. Since releases generally happen every week, often out of office hours and sometimes on weekends, depending on a single person for this activity creates a significant risk.
+
+Swati is currently working on pipeline testing, and her work involves checking scripts into GitHub. Because of segregation of duties as per AIG standards, she cannot take up the Release Engineer role until she completes this work and at least three months have passed afterwards.
+
+Releasing a key resource like Srini without having a replacement in place does not seem appropriate from an operational perspective. I wanted to highlight this well in advance so that we are aware of the potential impact.
+
+Requesting you to please look into this matter on priority.
