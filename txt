@@ -1,9 +1,75 @@
-Just a quick reminder that it has already been agreed and communicated that the direct point of contact for Dev and QA teams should be the internal Talbot DevOps team, rather than approaching AIG teams directly.
+@workspace
 
-For any issue that needs to be raised with AIG, a ServiceNow ticket must be created first. The AIG teams typically do not entertain direct requests via email and instead expect issues to be logged through the proper ticketing process.
+I need a full data lineage analysis for the following view in this SQL Server data warehouse solution:
 
-Therefore, please do not directly contact DBA, Infrastructure, Security, or any AIG teams without involving the internal Talbot DevOps team. Once a ServiceNow ticket is raised, the appropriate teams will take action accordingly.
+**Target View:** `[schema].[YourViewName]`
 
-Following this process will help ensure issues are tracked properly and handled in line with the agreed support model.
+This workspace contains a complete BI solution including:
+- A SQL Server database project (.sqlproj) with tables, views, and stored procedures
+- An SSIS project (.dtproj) with ETL packages
+- An SSAS project (.dwproj) with cubes, dimensions, and measures
 
-Thanks for your cooperation.
+Please analyse the entire solution and produce a complete lineage report covering all three layers below.
+
+---
+
+### LAYER 1 — Upstream Lineage (Sources → View)
+
+Trace everything that feeds into `[schema].[YourViewName]`:
+
+- All **base tables** the view directly or indirectly references
+- Any **intermediate views** in the chain, with their own source tables
+- Any **stored procedures** that write to those source tables
+- Any **SSIS packages or data flow tasks** that load data into the upstream tables
+  - Include: source connections, transformations applied, destination tables
+- For each upstream object, state: Object Name | Object Type | Role in the chain
+
+---
+
+### LAYER 2 — The View Itself
+
+- State the **full purpose** of this view in plain English
+- List every **column** it exposes, with a brief description of what each represents
+- Identify any **business logic, filters, joins, or transformations** applied within the view definition
+- Flag any **potential data quality concerns** (e.g. implicit type casts, nullable joins, hardcoded filters)
+
+---
+
+### LAYER 3 — Downstream Lineage (View → Consumers)
+
+Trace everything that consumes `[schema].[YourViewName]`:
+
+- Any **other views** that reference this view
+- Any **stored procedures** that query or join this view
+- Any **SSIS packages** that use this view as a source
+- Any **SSAS dimensions, measure groups, or named queries** that reference this view
+  - Include: cube name, dimension or measure group name, and how the view is used
+- For each downstream object, state: Object Name | Object Type | How it consumes the view
+
+---
+
+### OUTPUT FORMAT
+
+Please produce the lineage report in three formats:
+
+**1. Plain English Summary**
+A clear narrative (suitable for a non-technical stakeholder) explaining:
+- Where the data originates
+- What the view does to it
+- Where it ends up and how it is used in reporting or the cube
+
+**2. Structured Markdown Table**
+Three separate tables — one per layer — with columns:
+| Object Name | Object Type | Schema/Project | Role / Relationship | Notes |
+
+**3. Mermaid Flow Diagram**
+A left-to-right (`LR`) flowchart showing the complete lineage chain:
+- SSIS sources and packages as entry points
+- Upstream tables and intermediate views
+- The target view at the centre
+- Downstream consumers including SSAS cube objects as exit points
+- Use subgraphs to group by layer: `SSIS / ETL`, `SQL Layer`, `SSAS / Cube`
+
+---
+
+If any object cannot be found in the workspace, explicitly state it as `[NOT FOUND IN SOLUTION]` rather than assuming. Do not infer or hallucinate dependencies.
