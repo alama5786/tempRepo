@@ -97,3 +97,28 @@ For MDM next time:
 **One honest caveat:** Copilot's `@workspace` quality depends on how well the repo is indexed. If the solution is very large, it may miss some deeper nested projects. In that case, you can **add specific files as context** by dragging them into the Copilot Chat panel before running the prompt (e.g. the `.sln` file, key `.sqlproj` files). That guarantees those are included.
 
 Want me to also draft a **GitHub Copilot Skill** (a proper `.prompt.md` file using the newer Copilot Custom Instructions feature) as a more formal alternative?
+
+
+
+
+
+
+C:\Repos\
+├── TalbotWarehouse\          ← Talisman-7337
+│   ├── .github\
+│   │   └── copilot-instructions.md   ← Talisman-specific instructions
+│   ├── TalbotWarehouse.sln
+│   ├── DB\
+│   ├── SSIS\
+│   ├── SSRS\
+│   └── SSAS\
+│
+├── MDM\                      ← MDM-7317
+│   ├── .github\
+│   │   └── copilot-instructions.md   ← MDM-specific instructions
+│   └── MDM.sln
+│
+└── OtherProject\             ← Other-7xxx
+    ├── .github\
+    │   └── copilot-instructions.md
+    └── ...
