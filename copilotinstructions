@@ -1,0 +1,99 @@
+Good answers. One more thing before I give you the full approach:
+
+**Output format** — since your manager said "Knowledge Article" (likely ServiceNow), I'd recommend **structured Markdown or plain prose with headings**. That pastes cleanly into ServiceNow, Confluence, or Word. I'll factor that in — but confirm with your manager if they need a specific format.
+
+---
+
+## My Recommendation: Prompt + Reusable Copilot Instruction File
+
+Since you want it reusable across repos (Talisman, MDM, etc.), the best approach is **two things together**:
+
+1. **A reusable `.github/copilot-instructions.md`** (or a VS Code Copilot instruction file) — tells Copilot *how* to analyse any Talbot warehouse-style repo
+2. **A copy-paste Chat prompt** you run per repo — tells Copilot *what* to produce for this specific run
+
+This way, the instruction file does the heavy lifting once, and you just fire the prompt per project.
+
+---
+
+## Step 1 — Create the Reusable Copilot Instruction File
+
+In VS Code, create this file at the **root of the repo** (or your workspace):
+
+**`.github/copilot-instructions.md`**
+
+```markdown
+# Copilot Instructions — Talbot Warehouse Repo Analysis
+
+When asked to generate a Repository or Solution Overview for any project in this workspace, follow these rules:
+
+## Scope
+- Analyse the entire solution structure including all projects within it.
+- Cover all project types: Database Projects (.sqlproj), SSIS ETL Projects (.dtproj), SSRS Reporting Projects (.rptproj), SSAS Cube Projects (.dwprojx / .asdatabase), and any supporting utility or config projects.
+- Include Data Lake components and any pipeline/orchestration configs if present.
+
+## Output Structure
+Always produce the overview in the following sections:
+
+1. **Application Overview** — What the application does, its business purpose, and its Gear ID (e.g. Talisman-7337).
+2. **Solution Structure** — The top-level Visual Studio solution name, and a structured list of all projects within it with their type and purpose.
+3. **Repository Structure** — Top-level folder layout of the repo with a description of what each folder contains.
+4. **Component Breakdown** — For each project type, describe: what it does, key objects (e.g. stored procedures, packages, reports, cubes, dimensions, fact tables), and how it fits into the data flow.
+5. **Data Flow Summary** — High-level description of how data moves through the solution (source → staging → mart → reporting).
+6. **Dependencies & Integrations** — Any external dependencies, linked servers, shared configs, or cross-project references noted in the codebase.
+
+## Tone & Format
+- Write in clear, professional British English suitable for a Knowledge Article in ServiceNow.
+- Use headings, bullet points, and short paragraphs.
+- Do not include code snippets unless specifically asked.
+- Keep it factual — base everything on what exists in the repo, not assumptions.
+```
+
+> ✅ Once this file exists, **Copilot Chat automatically picks it up as context** for every conversation in that workspace.
+
+---
+
+## Step 2 — The Copy-Paste Prompt (run this in Copilot Chat)
+
+Once the instruction file is in place, open **Copilot Chat** in VS Code and paste this:
+
+```
+@workspace
+
+Please generate a full Repository and Solution Overview for the **[APPLICATION NAME] ([GEAR ID])** application based on the current workspace.
+
+Follow the output structure defined in `.github/copilot-instructions.md`.
+
+The overview will be used in a ServiceNow Knowledge Article, so use professional headings and clear plain English throughout.
+
+Make sure you cover:
+- The Visual Studio solution name and all projects within it
+- The purpose of each project (DB, SSIS, SSRS, SSAS, Data Lake, etc.)
+- The top-level folder structure of the repo
+- The overall data flow from source to reporting
+- Any notable dependencies or integrations visible in the repo
+```
+
+For Talisman, replace the placeholder with:
+> `[APPLICATION NAME]` → `Talisman`
+> `[GEAR ID]` → `7337`
+
+For MDM next time:
+> `[APPLICATION NAME]` → `MDM`
+> `[GEAR ID]` → `7317`
+
+---
+
+## Why This Approach Works
+
+| Factor | Why it's right |
+|---|---|
+| `@workspace` | Forces Copilot to scan the **actual repo files**, not hallucinate |
+| Instruction file | Ensures consistent output structure across all repos |
+| Parameterised prompt | One prompt, swap the name/ID per project |
+| ServiceNow-ready format | Headings + bullets paste cleanly without reformatting |
+
+---
+
+**One honest caveat:** Copilot's `@workspace` quality depends on how well the repo is indexed. If the solution is very large, it may miss some deeper nested projects. In that case, you can **add specific files as context** by dragging them into the Copilot Chat panel before running the prompt (e.g. the `.sln` file, key `.sqlproj` files). That guarantees those are included.
+
+Want me to also draft a **GitHub Copilot Skill** (a proper `.prompt.md` file using the newer Copilot Custom Instructions feature) as a more formal alternative?
