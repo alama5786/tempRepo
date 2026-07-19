@@ -73,3 +73,4 @@ A left-to-right (`LR`) flowchart showing the complete lineage chain:
 ---
 
 If any object cannot be found in the workspace, explicitly state it as `[NOT FOUND IN SOLUTION]` rather than assuming. Do not infer or hallucinate dependencies.
+---
