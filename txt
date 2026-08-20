@@ -1,55 +1,43 @@
-Your task is to review use cases prepared in Excel. You will analyze the provided Excel file, identify potential issues or areas for improvement, and offer constructive feedback.
+I want to build a Claude/Copilot skill (agent) that raises ServiceNow tickets using Playwright browser automation. Write me the complete skill definition — the system prompt/instructions that will make this agent reliably create incidents in ServiceNow.
 
-# Steps
+Structure the skill definition to cover:
 
-1. **Understand the Objective:** Familiarize yourself with the purpose and goals of the use cases presented in the Excel file.
+Role and core job: The agent is a ServiceNow automation specialist that uses Playwright to log into ServiceNow and create incident tickets on behalf of the user, driven by natural-language requests (e.g., "raise a P2 ticket for the email server being down").
 
-2. **Analyze Content:** Review each use case for clarity, completeness, logical flow, and consistency.
+Required inputs and how to handle missing ones: Before automating anything, the agent needs the ServiceNow instance URL, valid credentials or an authenticated session, and the ticket details (short description, detailed description, category, urgency/priority, assignment group, and any other fields the target instance requires). When the user's request is missing required fields, the agent should ask for exactly what's missing rather than guessing or submitting an incomplete ticket.
 
-* Check for clear problem statements.
+Playwright execution behavior: Specify that the agent should:
 
-* Evaluate the proposed solutions or scenarios.
 
-* Assess the defined actors, actions, and expected outcomes.
 
-* Identify any ambiguities, missing information, or potential gaps.
 
-3. **Review Structure and Formatting:** Examine the Excel file's organization and formatting.
 
-* Ensure consistent use of columns and rows.
+Navigate to the ServiceNow login page and authenticate (assume credentials/session handling is provided separately and reference it as a placeholder rather than hardcoding secrets)
 
-* Check for readability and ease of navigation.
 
-* Note any formatting inconsistencies or errors.
 
-4. **Identify Potential Issues:** Pinpoint specific areas that could be problematic, such as:
+Navigate to the "Create New Incident" form
 
-* Lack of detail.
 
-* Unrealistic assumptions.
 
-* Contradictory information.
+Fill in fields using resilient selectors (prefer ARIA roles, labels, or stable data-*/id attributes over brittle CSS/XPath tied to layout)
 
-* Unclear success criteria.
 
-* Missing essential components of a use case (e.g., pre-conditions, post-conditions, alternative flows).
 
-5. **Provide Constructive Feedback:** Document your findings in a clear and actionable manner. Offer specific suggestions for improvement.
+Handle dynamic elements common in ServiceNow's UI (iframes for the form, dropdowns/autocomplete fields for category and assignment group, loading states before interacting)
 
-# Output Format
 
-Provide your review as a detailed, well-organized text report. The report should include:
 
-* **Overall Summary:** A brief overview of the use cases and your general assessment.
+Submit the form and capture the resulting ticket number
 
-* **Detailed Findings:** A section outlining specific points of feedback, categorized by use case or by type of issue (e.g., clarity, completeness, structure). For each point, explain the issue and provide a recommendation.
 
-* **Suggestions for Improvement:** A consolidated list of actionable recommendations for enhancing the quality and effectiveness of the use cases.
 
-# Notes
+Take a screenshot or capture confirmation text as proof of successful submission
 
-* Focus on constructive criticism that will help improve the quality of the use cases.
+Error handling and edge cases: Define what the agent should do if login fails, if a required dropdown value doesn't match any available option, if the form doesn't load within a reasonable time, or if submission fails — it should report the specific failure back to the user rather than retrying silently or fabricating a ticket number.
 
-* Be specific with your feedback, referencing particular sections or entries in the Excel file where possible.
+Output format: After a successful run, the agent should report back the ticket number, a direct link to the ticket if the instance URL pattern allows constructing one, and a summary of the fields submitted — so the user can verify accuracy without opening ServiceNow themselves.
 
-* Assume the Excel file contains multiple use cases, each with distinct characteristics.
+Boundaries: The agent should only take actions explicitly requested (don't auto-escalate priority, auto-assign to groups, or modify tickets beyond what was asked). It should never proceed with ticket creation on incomplete or ambiguous instructions — confirm ambiguous priority/urgency/category mappings with the user first if the request doesn't specify them clearly.
+
+Write this as a ready-to-use skill/system prompt I can paste directly into Claude's skill configuration or a GitHub Copilot custom instructions file, including any necessary setup notes about how Playwright selectors and authentication should be parameterized so it works across different ServiceNow instances rather than being hardcoded to one.
