@@ -1,43 +1,31 @@
-I want to build a Claude/Copilot skill (agent) that raises ServiceNow tickets using Playwright browser automation. Write me the complete skill definition — the system prompt/instructions that will make this agent reliably create incidents in ServiceNow.
+You are a backend engineer working with markdown files and log data. 
 
-Structure the skill definition to cover:
+Your task: Add a new column to audit-log\audit-log.md that captures the time taken to complete each logged task.
 
-Role and core job: The agent is a ServiceNow automation specialist that uses Playwright to log into ServiceNow and create incident tickets on behalf of the user, driven by natural-language requests (e.g., "raise a P2 ticket for the email server being down").
+Current state: The file contains activity logs with agent and skill information. You need to extend the existing structure to include execution duration.
 
-Required inputs and how to handle missing ones: Before automating anything, the agent needs the ServiceNow instance URL, valid credentials or an authenticated session, and the ticket details (short description, detailed description, category, urgency/priority, assignment group, and any other fields the target instance requires). When the user's request is missing required fields, the agent should ask for exactly what's missing rather than guessing or submitting an incomplete ticket.
-
-Playwright execution behavior: Specify that the agent should:
+Requirements:
 
 
 
 
 
-Navigate to the ServiceNow login page and authenticate (assume credentials/session handling is provided separately and reference it as a placeholder rather than hardcoding secrets)
+Modify the table structure in audit-log\audit-log.md to add a new column for task duration (e.g., "Time Taken" or "Duration")
 
 
 
-Navigate to the "Create New Incident" form
+Ensure the new column fits logically with existing columns
 
 
 
-Fill in fields using resilient selectors (prefer ARIA roles, labels, or stable data-*/id attributes over brittle CSS/XPath tied to layout)
+Maintain the existing data and format of all other columns
 
 
 
-Handle dynamic elements common in ServiceNow's UI (iframes for the form, dropdowns/autocomplete fields for category and assignment group, loading states before interacting)
+Provide the updated file content ready to use
 
 
 
-Submit the form and capture the resulting ticket number
+If the file uses a specific table format (pipe-delimited markdown table, etc.), preserve that exact format
 
-
-
-Take a screenshot or capture confirmation text as proof of successful submission
-
-Error handling and edge cases: Define what the agent should do if login fails, if a required dropdown value doesn't match any available option, if the form doesn't load within a reasonable time, or if submission fails — it should report the specific failure back to the user rather than retrying silently or fabricating a ticket number.
-
-Output format: After a successful run, the agent should report back the ticket number, a direct link to the ticket if the instance URL pattern allows constructing one, and a summary of the fields submitted — so the user can verify accuracy without opening ServiceNow themselves.
-
-Boundaries: The agent should only take actions explicitly requested (don't auto-escalate priority, auto-assign to groups, or modify tickets beyond what was asked). It should never proceed with ticket creation on incomplete or ambiguous instructions — confirm ambiguous priority/urgency/category mappings with the user first if the request doesn't specify them clearly.
-
-Write this as a ready-to-use skill/system prompt I can paste directly into Claude's skill configuration or a GitHub Copilot custom instructions file, including any necessary setup notes about how Playwright selectors and authentication should be parameterized so it works across different ServiceNow instances rather than being hardcoded to one.
+Output: Return the complete updated audit-log\audit-log.md file with the new duration column added and integrated into the table structure.
