@@ -14,7 +14,46 @@ A summary of what each agent/skill does and its role in the system
 
 
 
-How agents can be chained or triggered (dependencies, handoff points)
+How agents can be chained or triggered (dependencies, handoff points)Proposed skills
+
+Repo and workflow
+
+bi-repo-setup: folder layout per tool, .gitignore and .gitattributes for BI artefacts, CODEOWNERS, PR template, branch protection guidance
+bi-commit-and-branch: branch naming, commit message convention, ticket linking, keeping commits small
+bi-pr-author: generates the PR description from the diff, with a per-artefact checklist, deployment notes, and rollback steps
+bi-merge-conflict-resolver: resolves conflicts in .dtsx, .rdl, .bim/TMDL, and PBIP files (which parts of the XML to keep, which are safe layout noise)
+bi-git-recovery: guided stash, reset, revert, reflog for "I broke something" moments
+
+Code review (author and reviewer modes)
+6. bi-code-review: router skill that detects artefact types in the diff and applies the right checks
+7. Reference files inside it, one per technology:
+
+SQL: performance, indexing, set-based logic, hard-coded values, naming
+SSIS: connection managers, error handling, logging, package parameters, protection level
+SSRS: datasets, parameters, shared data sources, hard-coded paths
+SSAS Tabular: relationships, measures, calculation groups, DAX patterns
+Power BI: PBIP structure, DAX, model hygiene, report-level issues
+
+Security and config
+8. bi-secrets-and-config-scan: finds credentials and connection strings in .dtsx, .rdl, .pbip, and scripts, and moves them to parameters or environment config
+
+Automation and release
+9. bi-github-actions-builder: generates workflows for SSDT build, tSQLt, sqlfluff, Tabular Editor Best Practice Analyzer
+10. bi-deployment-and-rollback: environment promotion, release tags, and rollback runbook
+11. bi-release-notes: release notes from merged PRs and tags
+
+Migration and onboarding
+12. pbix-to-pbip-migration: step-by-step conversion to a text-diffable project
+13. bi-git-onboarding: analogy-first walkthrough for BI developers new to Git
+
+Recommendation: don't build 13 separate skills
+Per-technology review skills trigger poorly and drift apart. Use one bi-code-review skill with references/ files per technology, loaded only when needed.
+Skills are instructions plus optional scripts. They can't run Git on a developer's machine on their own. For checks that must be deterministic (secret scanning, XML validation), put a script in the skill or in CI, not in prose.
+Build order
+Phase 1: bi-repo-setup, bi-pr-author, bi-code-review (SQL and Power BI references first)
+Phase 2: bi-merge-conflict-resolver, bi-secrets-and-config-scan
+Phase 3: bi-github-actions-builder, bi-deployment-and-rollback
+Phase 4: the rest, driven by what developers actually ask for
 
 
 
